@@ -278,19 +278,34 @@ class AccionistaDAO {
 
     public static function getLibroAccionistas()
     {
-        // no accion,dueño,rfc,curp,fecha movimiento,estatus,autorizado
+        /* 
+            SELECT 
+	            acciones.cve_accion,
+	            dueno.cve_dueno,
+	            persona.nombre,
+	            persona.apellido_paterno,
+	            persona.apellido_materno,
+	            persona.rfc,
+	            persona.curp,
+	            acciones.estatus,
+	            CONCAT(numero_accion,CASE clasificacion WHEN 1 THEN 'A' WHEN 2 THEN 'B' WHEN 3 THEN 'C' ELSE '' END) AS no_accion,
+	            tipo_accion.nombre AS tipo_accion_,
+	            acciones.fecha_adquisicion,
+	            acciones.fecha_alta
+            from dueno 
+            inner join acciones on dueno.cve_dueno=acciones.cve_dueno
+            inner join persona on dueno.cve_persona=persona.cve_persona
+            INNER JOIN tipo_accion ON acciones.cve_tipo_accion=tipo_accion.cve_tipo_accion
+            where acciones.numero_accion<=1500
+            order By acciones.numero_accion ,acciones.clasificacion        
+        */
         try {
             return Accionista::join('acciones','dueno.cve_dueno','acciones.cve_dueno')
             ->join('persona','dueno.cve_persona','persona.cve_persona')
-            // ->groupBy('dueno.cve_dueno')
-            // ->orderBy("persona.apellido_paterno","asc")
-            // ->orderBy("persona.apellido_materno","asc")
-            // ->orderBy("persona.nombre","asc")
-            // ->orderBy('persona.nombre')
-            // ->orderBy('dueno.cve_dueno')
+            ->join("tipo_accion" , "acciones.cve_tipo_accion","tipo_accion.cve_tipo_accion")
             ->orderBy('acciones.numero_accion')
             ->orderBy('acciones.clasificacion')
-            ->select('acciones.cve_accion','dueno.cve_dueno AS id','persona.nombre','persona.apellido_paterno' ,'persona.apellido_materno','persona.rfc','persona.curp','acciones.estatus')
+            ->select('acciones.cve_accion','dueno.cve_dueno','persona.nombre','persona.apellido_paterno' ,'persona.apellido_materno','persona.rfc','persona.curp','acciones.estatus','tipo_accion.nombre AS tipo_accion_','acciones.fecha_adquisicion','acciones.fecha_alta')
             ->selectRaw("CONCAT(numero_accion,CASE clasificacion WHEN 1 THEN 'A' WHEN 2 THEN 'B' WHEN 3 THEN 'C' ELSE '' END) AS no_accion")
             ->where("acciones.numero_accion","<=",1500)
             ->get();            

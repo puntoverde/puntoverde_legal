@@ -184,7 +184,8 @@ class SocioDAO {
         ->addSelect('persona.nombre','persona.apellido_paterno','persona.apellido_materno','persona.fecha_nacimiento','persona.curp','persona.rfc')
         ->addSelect('socios.posicion','acciones.numero_accion','acciones.clasificacion','parentescos.cve_parentesco','parentescos.nombre AS parentesco')
         ->addSelect(DB::raw('TIMESTAMPDIFF(YEAR,persona.fecha_nacimiento,CURDATE()) AS edad'))
-        ->addSelect('socios.acceso_sin_huella','socios.bloqueo_temporal','socios.observaciones','socios.cve_accion','socios.foto')
+        ->addSelect('socios.acceso_sin_huella','socios.bloqueo_temporal','socios.observaciones','socios.cve_accion')
+        ->selectRaw("if(socios.foto_socio is null,0,1) as foto")
         ->selectRaw("COUNT(usuario_observacion.id) AS borra_huella_observacion")
         ->where('socios.cve_accion',$cve_accion??0) 
         ->orderBy('socios.posicion')
@@ -319,7 +320,7 @@ class SocioDAO {
     {
         try {
             return DB::table("socios")->where("socios.cve_socio", $id)->value("foto_socio");
-        } catch (\Exeption $th) {
+        } catch (\Exception $th) {
         }
     }
 
@@ -331,7 +332,7 @@ class SocioDAO {
             return DB::table("socios")->where("cve_socio",$id)->update(["foto_socio"=>$foto]);
 
         }
-        catch(\Exeption $e){
+        catch(\Exception $e){
 
         }
 

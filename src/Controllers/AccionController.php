@@ -30,4 +30,12 @@ class AccionController extends Controller
     public function agregarCuotaActivacion($id){
         return AccionDAO::agregarCuotaActivacion($id);
     }
+    
+    public function updateFechasAccion(Request $req){
+        $reglas = ["cve_accion" => "required", "fecha_alta" => "required", "fecha_adquisicion" => "required"];
+
+        $this->validate($req, $reglas);
+        $id_colaborador=$req->get("id_colaborador");
+        return AccionDAO::updateFechasAccion((object)$req->all(),$id_colaborador);
+    }
 }

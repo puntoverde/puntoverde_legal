@@ -56,7 +56,7 @@ class InvitadoController extends Controller
             "fecha_nac" => "required",  
             // "posicion" => "required", 
             "cve_accion" => "required", 
-            "profesion" => "required", 
+            // "profesion" => "required", 
             // "parentesco" => "required"
         ];
 

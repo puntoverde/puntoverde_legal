@@ -72,4 +72,21 @@ class AccionDAO {
          return 0;
       }
    }
+
+
+    public static function updateFechasAccion($p,$id_colaborador){
+      
+      $accion=Accion::find($p->cve_accion);
+      
+      DB::table("accion_bitacora_fechas_libro")->insert(["id_colaborador"=>$id_colaborador,"fecha_alta"=>$p->fecha_alta,"fehca_adquisicion"=>$p->fecha_adquisicion,"fehca_adquisicion_anterior"=>$accion->fecha_adquisicion,"fecha_alta_anterior"=>$accion->fecha_alta]);
+            
+      $accion->fecha_alta=$p->fecha_alta;
+      $accion->fecha_adquisicion=$p->fecha_adquisicion;      
+      
+      $ok=$accion->save();
+
+
+      return $ok;
+
+   }
 }

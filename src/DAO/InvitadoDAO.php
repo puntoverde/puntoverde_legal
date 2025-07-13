@@ -46,7 +46,7 @@ class InvitadoDAO {
         $direccion=new Direccion();
         $direccion->calle=$p->calle;
         $direccion->numero_exterior=$p->num_ext;
-        $direccion->numero_interior=$p->num_int;
+        $direccion->numero_interior=$p->num_int??'';
         $direccion->colonia()->associate($colonia);
         $direccion->save();
 
@@ -112,8 +112,9 @@ class InvitadoDAO {
         
         if($p->tipo_invitado==0)// cuando sea asi mismo se cargara ala accion de invitado
         {
+            $persona_misma_=DB::table("socios")->where("cve_socio",$id)->value("cve_persona");
             $p->cve_accion_cargo= $p->cve_accion_cargo;
-            $p->cve_persona_cargo=$p->cve_persona_cargo;
+            $p->cve_persona_cargo=$persona_misma_;
         }
 
         DB::select("INSERT into cargo(cve_accion, cve_cuota, cve_persona, concepto, total, subtotal, iva, cantidad, periodo, responsable_carga, fecha_cargo, recargo, estatus) 
@@ -181,7 +182,7 @@ class InvitadoDAO {
         ->join('parentescos' , 'socios.cve_parentesco','parentescos.cve_parentesco')
         ->select('persona.nombre','apellido_paterno','apellido_materno','persona.sexo','fecha_nacimiento')
         ->addSelect('pais.nombre AS nacionalidad','estado_civil','celular','numero_exterior','numero_interior') 
-        ->addSelect('cp','colonia.nombre AS colonia','correo_electronico','grado_estudio','profesion.nombre AS profesion')
+        ->addSelect('cp','colonia.nombre AS colonia','direccion.calle','correo_electronico','grado_estudio','profesion.nombre AS profesion')
         ->addSelect('estado_accion')
         ->where('socios.cve_socio',$id)->first();      
     }
