@@ -357,7 +357,7 @@ class InvitadoDAO {
             ->select("cve_socio","cve_persona","cve_direccion","cve_profesion","cve_parentesco","cve_accion","celular","correo_electronico","posicion",DB::raw("0 AS temporal"))
             ->where("cve_socio",$id_socio)->first();
             // dd($socio_eliminar);
-            $persona_eliminar=DB::table("persona")->where("cve_persona",$socio_eliminar->cve_persona)->first();
+            $persona_eliminar=DB::table("persona")->where("cve_persona",$socio_eliminar->cve_persona)->first(["cve_persona","nombre","apellido_paterno","apellido_materno","sexo","fecha_nacimiento","curp","rfc","edad","estado_civil","cve_pais","estatus"]);
             // dd($persona_eliminar);
             $direccion_eliminar=DB::table("direccion")->where("cve_direccion",$socio_eliminar->cve_direccion)->first();
             // dd($direccion_eliminar);
@@ -372,7 +372,8 @@ class InvitadoDAO {
             DB::table("historico_invitado_socio_dias")->where("invitado",$id_invitado)->delete();
             DB::table("historico_invitado_socio")->where("id",$id_invitado)->delete();
             DB::statement("SET FOREIGN_KEY_CHECKS = 1;");
-
+         
+            // var_dump(collect($socio_eliminar)->merge($persona_eliminar)->merge($direccion_eliminar)->merge($historico_eliminar)->merge($historico_eliminar_dias));
             // dd(collect($socio_eliminar)->merge($persona_eliminar)->merge($direccion_eliminar)->merge($historico_eliminar)->merge($historico_eliminar_dias));
             return DB::table("invitado_eliminar")->insert(collect($socio_eliminar)->merge($persona_eliminar)->merge($direccion_eliminar)->merge($historico_eliminar)->merge($historico_eliminar_dias)->toArray());                    
 
